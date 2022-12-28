@@ -27,20 +27,20 @@ file_dic = {'ivy':     ['ivy-1.1.csv', 'ivy-1.4.csv', 'ivy-2.0.csv'],
             }
 
 # For the Wang et al. experiments
-file_dic_wang = {"ivy":     ["ivy-1.4.csv", "ivy-2.0.csv"],
-                 "lucene":  ["lucene-2.0.csv", "lucene-2.2.csv"],
+file_dic_wang = {"ivy1":     ["ivy-1.4.csv", "ivy-2.0.csv"],
+                 "lucene1":  ["lucene-2.0.csv", "lucene-2.2.csv"],
                  "lucene2": ["lucene-2.2.csv", "lucene-2.4.csv"],
-                 "poi":     ["poi-1.5.csv", "poi-2.5.csv"],
+                 "poi1":     ["poi-1.5.csv", "poi-2.5.csv"],
                  "poi2": ["poi-2.5.csv", "poi-3.0.csv"],
-                 "synapse": ["synapse-1.0.csv", "synapse-1.1.csv"],
+                 "synapse1": ["synapse-1.0.csv", "synapse-1.1.csv"],
                  "synapse2": ["synapse-1.1.csv", "synapse-1.2.csv"],
-                 "camel": ["camel-1.2.csv", "camel-1.4.csv"],
+                 "camel1": ["camel-1.2.csv", "camel-1.4.csv"],
                  "camel2": ["camel-1.4.csv", "camel-1.6.csv"],
-                 "xerces": ["xerces-1.2.csv", "xerces-1.3.csv"],
-                 "jedit": ["jedit-3.2.csv", "jedit-4.0.csv"],
+                 "xerces1": ["xerces-1.2.csv", "xerces-1.3.csv"],
+                 "jedit1": ["jedit-3.2.csv", "jedit-4.0.csv"],
                  "jedit2": ["jedit-4.0.csv", "jedit-4.1.csv"],
-                 "log4j": ["log4j-1.0.csv", "log4j-1.1.csv"],
-                 "xalan": ["xalan-2.4.csv", "xalan-2.5.csv"]
+                 "log4j1": ["log4j-1.0.csv", "log4j-1.1.csv"],
+                 "xalan1": ["xalan-2.4.csv", "xalan-2.5.csv"]
                  }
 
 
@@ -76,7 +76,7 @@ def remove_labels(data):
     return data, 0.8 * len(x_rest) / (len(x_rest) + len(x_lost))
 
 
-def run(data: Data, name: str, config: dict):
+def run(data: Data, name: str, config: dict, metrics: list):
     """
     Runs one experiment, given a Data instance.
 
@@ -115,10 +115,10 @@ def run(data: Data, name: str, config: dict):
         dodge_config = {
             'n_runs': 1,
             'data': [data],
-            'metrics': ['f1', 'd2h', 'pd', 'pf', 'prec'],
+            'metrics': metrics,
             'learners': [],
             'log_path': './ghost-log/',
-            'transforms': ['standardize', 'normalize', 'minmax'] * 30,
+            'transforms': ['standardize', 'normalize', 'minmax', 'robust', 'maxabs'] * 30,
             'random': True,
             'name': name
         }
@@ -132,7 +132,7 @@ def run(data: Data, name: str, config: dict):
                 FeedforwardDL(weighted=weighted, wfo=wfo, smote=smote,
                               random={'n_units': (
                                   2, 6), 'n_layers': (2, 5)},
-                              n_epochs=50)
+                              n_epochs=100)
             )
 
         dodge = DODGE(dodge_config)
@@ -142,26 +142,26 @@ def run(data: Data, name: str, config: dict):
     # Otherwise, it's one of the untuned approaches.
     elif config.get('wfo', False):
         learner = FeedforwardDL(weighted=True, wfo=True,
-                                smote=True, n_epochs=50)
+                                smote=True, n_epochs=100)
         learner.set_data(*data)
         learner.fit()
 
     elif config.get('weighted_loss', False):
         learner = FeedforwardDL(weighted=True, wfo=False,
-                                smote=False, n_epochs=50)
+                                smote=False, n_epochs=100)
         learner.set_data(*data)
         learner.fit()
 
     else:
         learner = FeedforwardDL(
-            weighted=False, wfo=False, smote=False, n_epochs=50, random={'n_layers': (1, 5), 'n_units': (5, 20)})
+            weighted=False, wfo=False, smote=False, n_epochs=100, random={'n_layers': (1, 5), 'n_units': (5, 20)})
         learner.set_data(*data)
         learner.fit()
 
     # Get the results.
     preds = learner.predict(data.x_test)
     m = ClassificationMetrics(data.y_test, preds)
-    m.add_metrics(['f1', 'd2h', 'pd', 'pf', 'prec'])
+    m.add_metrics(metrics)
     results = m.get_metrics()
     return results
 
@@ -174,6 +174,11 @@ def run_experiment(dic, filename: str, config: dict):
     :param {dict} config_name - The name of the config. Must be in `process_configs`.
     '''
     name = filename
+    metrics = ['d2h', 'f1', 'pd', 'pf', 'prec']
+
+    if filename[-1] == '1' or filename[-1] == '2':
+        # Wang et al. datasets
+        metrics = ['pd', 'f1', 'd2h', 'pf', 'prec']
 
     if config['dodge']:
         name += f'-{config["dodge"]}-{config["wfo"]}-{config["ultrasample"]}-{config["smote"]}-{config["smooth"]}'
@@ -194,11 +199,10 @@ def run_experiment(dic, filename: str, config: dict):
 
     # If we're using DODGE, then it prints a file that we interpret and runs 10 times.
     if config['dodge']:
-        run(dataset, name, config)
+        run(dataset, name, config, metrics)
 
         # Now we need to interpret it.
-        interp = DODGEInterpreter(files=[f'./ghost-log/{name}.txt'], max_by=0, metrics=[
-                                  'f1', 'd2h', 'pd', 'pf', 'prec'])
+        interp = DODGEInterpreter(files=[f'./ghost-log/{name}.txt'], max_by=0, metrics=metrics)
         result = interp.interpret()
 
         return result[name + '.txt']
@@ -210,7 +214,7 @@ def run_experiment(dic, filename: str, config: dict):
         for i in range(1):
             dataset = DataLoader.from_files(
                 base_path=base_path, files=dic[filename], hooks=[Hook('binarize', _binarize)])
-            result = run(dataset, name, config)
+            result = run(dataset, name, config, metrics)
             results.append(result)
 
         return results
@@ -227,7 +231,7 @@ def run_all_experiments():
 
     total = 768
     pbar = tqdm(total=total)
-    file_number = random.randint(1, 10000)
+    file_number = os.getenv('SLURM_JOB_ID') or random.randint(1, 10000)
     for dic in [file_dic, file_dic_wang]:
         for file in dic:
             f = open(f'runs-{file_number}.txt', 'a')

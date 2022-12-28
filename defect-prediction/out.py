@@ -4,9 +4,22 @@ class list(list):
     def map(self, f):
         return list(map(f, self))
 
+import re
+from io import StringIO
 import numpy as np
 import pandas as pd
 from numpy import array
+from pprint import pprint
+
+
+def get_max_rows(group, col1='pd-pf', col2='f1'):
+    max_val1 = group[col1].max()
+
+    if len(group[group[col1] == max_val1]) == 1:
+        return group[group[col1] == max_val1]
+
+    max_val2 = group[col2].max()
+    return group[(group[col1] == max_val1) & (group[col2] == max_val2)]
 
 
 pairs = {}
@@ -37,8 +50,17 @@ for file in _:
         _ = list(_)
     except ValueError:
         raise
-    results = _.map(lambda x: eval(x))
-    results = [x[0] if type(x).__name__ == 'list' else [x['f1'], x['d2h'], x['pd'], x['pf'], x['prec']] for x in results]
+    results = _
+    
+    for i, r in enumerate(results):
+        try:
+            results[i] = eval(r)
+        except:
+            try:
+                results[i] = eval(re.sub('(?<!\[)\s+', ',', r))
+            except Exception as err:
+                print(err, r)
+                print(file)
 
     for i, (t, r) in enumerate(zip(treatments, results)):
         if i < 320:
@@ -51,13 +73,18 @@ for file in _:
             pairs[s] = []
         pairs[s].append(r)
 
-df = pd.DataFrame(columns=['dataset', 'smote', 'smooth', 'dodge', 'ultrasample', 'wfo', 'f1', 'pd', 'pf', 'prec'])
-for s, r in pairs.items():
+df = pd.DataFrame(columns=['dataset', 'smote', 'smooth', 'dodge', 'ultrasample', 'wfo'])
+for i, (s, r) in enumerate(pairs.items()):
     t = dict(s)
-    perf = np.median(r, axis=0).squeeze()
 
-    t = {**t, 'f1': perf[0], 'pd': perf[2], 'pf': perf[3], 'prec': perf[4]}
-    df = df.append(t, ignore_index=True)
+    if len(np.array(r).shape) == 2:
+        perf = np.median(r, axis=0).squeeze()
+    
+    if i < 320:
+        t = {**t, 'pd-pf': perf[0], 'f1': perf[1], 'pd': perf[2], 'pf': perf[3], 'prec': perf[4]}
+    else:
+        t = {**t, 'pd-pf': perf[2], 'f1': perf[1], 'pd': perf[0], 'pf': perf[3], 'prec': perf[4]}
+    df = df.append(t, ignore_index=True) 
 
-max_value = df.groupby('dataset')['f1'].max()
-df[df['f1'].isin(max_value)].to_csv('results.csv')
+result = df.groupby('dataset').apply(get_max_rows)
+result.to_csv('results.csv')
