@@ -12,6 +12,7 @@ from raise_utils.hooks import Hook
 from sklearn.model_selection import train_test_split
 from scipy.spatial import KDTree
 from scipy.stats import mode
+from tensorflow.keras.utils import to_categorical
 from tqdm import tqdm
 
 
@@ -62,6 +63,10 @@ def split_data(filename: str, data: Data, n_classes: int):
             data.y_train < 6, 4, np.where(data.y_train < 8, 5, np.where(data.y_train < 11, 6, np.where(data.y_train < 21, 7, 8))))))))
         data.y_test = np.where(data.y_test < 1, 0, np.where(data.y_test < 2, 1, np.where(data.y_test < 3, 2, np.where(data.y_test < 4, 3, np.where(
             data.y_test < 6, 4, np.where(data.y_test < 8, 5, np.where(data.y_test < 11, 6, np.where(data.y_test < 21, 7, 8))))))))
+
+    if n_classes > 2:
+        data.y_train = to_categorical(data.y_train, num_classes=n_classes, dtype=int)
+        data.y_test = to_categorical(data.y_test, num_classes=n_classes, dtype=int)
 
     return data
 
