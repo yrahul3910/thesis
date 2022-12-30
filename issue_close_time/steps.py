@@ -199,8 +199,7 @@ def run(data: Data, name: str, n_class: int, config: dict):
                 )
 
         dodge = DODGE(dodge_config)
-        dodge.optimize()
-        return
+        return dodge.optimize()[0]
 
     # Otherwise, it's one of the untuned approaches.
     elif config.get('wfo', False):
@@ -242,29 +241,13 @@ def run_experiment(filename: str, n_class: int, config: dict, file):
 
     name = f'{filename}-{n_class}'
     name += f'-{config["dodge"]}-{config["wfo"]}-{config["ultrasample"]}-{config["smote"]}-{config["smooth"]}'
+    name += f'-{os.environ["SLURM_JOB_ID"] or "local"}'
 
     data = load_data(filename, n_class)
     top1 = []
     top2 = []
 
-    # If we're using DODGE, then it prints a file that we interpret and runs 10 times.
-    if config['dodge']:
-        run(data, name, n_class, config)
-
-        # Now we need to interpret it.
-        interp = DODGEInterpreter(files=[f'./ghost-log/{name}.txt'], max_by=0, metrics=['accuracy'])
-        result = interp.interpret()
-
-        return result[name + '.txt']
-
-    else:
-        # We need to run the loop ourselves.
-        # Hold the results.
-        results = []
-        result = run(data, name, n_class, config)
-        results.append(result)
-
-        return results
+    return run(data, name, n_class, config)
 
 
 def run_all_experiments():
