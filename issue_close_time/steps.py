@@ -269,8 +269,8 @@ def run_all_experiments():
     total = 90
     pbar = tqdm(total=total)
     file_number = os.getenv('SLURM_JOB_ID') or random.randint(1, 10000)
-    for filename in ['firefox', 'chromium', 'eclipse']:
-        for n_class in [2, 3, 5, 7, 9]:
+    for filename in ['chromium', 'firefox', 'eclipse']:
+        for n_class in [3, 5, 7, 9]:
             file = open(f'runs-{file_number}.txt', 'a')
             print(f'{filename}-{n_class}:', file=file)
             print('=' * len(f'{filename}-{n_class}:'), file=file)
