@@ -2,6 +2,12 @@
 
 This repo will act as the definitive source of information for GHOST-v2. It will be updated as the project progresses. For multiple tasks, this repo checks if GHOST-v2 generalizes and if all components are necessary.
 
+## File descriptions
+
+* `defect-prediction`: Defect prediction ablation study
+* `issue_close_time`: Issue lifetime prediction ablation study
+* `smoothness-hpo`: A test to see if beta-smoothness can be used as a heuristic for HPO.
+
 ## Recommended Links
 
 * [GHOST Materials](https://github.com/yrahul3910/ghost-materials): Contains some materials relating to GHOST-v2. Specifically, it seems to contain some images from the paper.
