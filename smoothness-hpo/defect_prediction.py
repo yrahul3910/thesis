@@ -45,6 +45,7 @@ for filename in defect_file_dic.keys():
             best_configs = list(best_configs[:keep_configs])
     
     for config in best_configs:
+        data = deepcopy(data_orig)
         print(config, file=file)
-        print('[main] Accuracy:', run_experiment(data_orig, 2, **config), file=file)
+        print('[main] Accuracy:', run_experiment(data, 2, **config), file=file)
         file.flush()
