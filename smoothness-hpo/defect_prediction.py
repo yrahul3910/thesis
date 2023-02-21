@@ -16,7 +16,7 @@ hpo_space = {
 }
 
 file_number = os.getenv('SLURM_JOB_ID') or random.randint(1, 10000)
-for filename in defect_file_dic.keys():
+for filename in defect_file_wang_dic.keys():
     file = open(f'runs-{file_number}.txt', 'a')
     print(f'{filename}:', file=file)
 
@@ -44,8 +44,8 @@ for filename in defect_file_dic.keys():
             best_betas = list(best_betas[:keep_configs])
             best_configs = list(best_configs[:keep_configs])
     
-    for config in best_configs:
+    for beta, config in zip(best_betas, best_configs):
         data = deepcopy(data_orig)
-        print(config, file=file)
+        print(f'Config: {config}\nbeta: {beta}', file=file)
         print('[main] Accuracy:', run_experiment(data, 2, **config), file=file)
         file.flush()

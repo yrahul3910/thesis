@@ -7,6 +7,7 @@ from raise_utils.transforms import Transform
 from raise_utils.learners import Autoencoder
 from raise_utils.data import Data, DataLoader
 from raise_utils.hooks import Hook
+from raise_utils.metrics import ClassificationMetrics
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from tensorflow.keras.utils import to_categorical
@@ -17,7 +18,7 @@ import pyximport
 
 pyximport.install()
 
-from remove_labels import remove_labels
+from .remove_labels import remove_labels
 
 
 # Dataset filenames
@@ -47,6 +48,10 @@ def run_experiment(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample
     n_layers: int, preprocessor: str) -> None:
     print('[run_experiment] Getting model')
     model, data = get_model(data, n_class, wfo, smote, ultrasample, smooth, n_units, n_layers, preprocessor)
+
+    if n_class > 2 and len(data.y_train) == 1:
+        data.y_train = to_categorical(data.y_train, n_class)
+        data.y_test = to_categorical(data.y_test, n_class)
     print('[run_experiment] Got model')
     model.fit(data.x_train, data.y_train, epochs=100, verbose=1, batch_size=128)
     print('[run_experiment] Fit model')
@@ -54,16 +59,24 @@ def run_experiment(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample
     if n_class == 2:
         y_pred = (model.predict(data.x_test) > 0.5).astype('int32')
     else:
-        preds = np.argmax(model.predict(data.x_test), axis=-1)
-        y_pred = to_categorical(preds, num_classes=n_class)
+        y_pred = np.argmax(model.predict(data.x_test), axis=-1)
     
-    return accuracy_score(data.y_test, y_pred)
+    if n_class > 2 and len(data.y_test) > 1:
+        data.y_test = np.argmax(data.y_test, axis=1)
+
+    metrics = ClassificationMetrics(data.y_test, y_pred)
+    metrics.add_metrics(['accuracy'])
+    return metrics.get_metrics()
 
 
 def get_smoothness(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: bool, smooth: bool, n_units: int,
     n_layers: int, preprocessor: str) -> float:
     print('[get_smoothness] Getting model')
     model, data = get_model(data, n_class, wfo, smote, ultrasample, smooth, n_units, n_layers, preprocessor)
+
+    if n_class > 2 and len(data.y_train) == 1:
+        data.y_train = to_categorical(data.y_train, n_class)
+        data.y_test = to_categorical(data.y_test, n_class)
     print('[get_smoothness] Got model')
 
     # Fit for one epoch before computing smoothness
@@ -116,8 +129,8 @@ def get_many_random_hyperparams(options: dict, n: int) -> list:
         hyperparams.append(get_random_hyperparams(options))
     return hyperparams
 
-"""
-def remove_labels(data: Data) -> Data:
+
+def remove_labels_legacy(data: Data) -> Data:
     # "Remove" labels
     lost_idx = np.random.choice(
         len(data.y_train), size=int(len(data.y_train) - np.sqrt(len(data.y_train))), replace=False)
@@ -134,15 +147,15 @@ def remove_labels(data: Data) -> Data:
 
     # Impute data
     tree = KDTree(x_rest)
-    _, idx = tree.query(x_lost, k=int(np.sqrt(np.sqrt(len(x_rest)))), p=1, workers=4)
-    y_lost = mode(y_rest[idx], axis=1)[0].reshape(-1)
+    _, idx = tree.query(x_lost, k = int(np.sqrt(np.sqrt(len(x_rest)))), p=1)
+    y_lost = mode(y_rest[idx], axis=1)[0]
+    y_lost = y_lost.reshape((y_lost.shape[0], y_lost.shape[-1]))
 
     assert len(x_lost) == len(y_lost)
 
     data.x_train = np.concatenate((x_lost, x_rest), axis=0)
     data.y_train = np.concatenate((y_lost, y_rest), axis=0)
     return data
-"""
 
 
 def get_model(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: bool, smooth: bool,
@@ -162,7 +175,10 @@ def get_model(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: boo
         data.y_train = np.array(data.y_train)
 
         print('[get_model] Running smooth')
-        data = remove_labels(data)
+        if n_class == 2:
+            data.x_train, data.y_train = remove_labels(data.x_train, data.y_train)
+        else:
+            data = remove_labels_legacy(data)
         print('[get_model] Finished running smooth')
 
     if ultrasample:
@@ -207,7 +223,15 @@ def get_model(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: boo
     if smote:
         print('[get_model] Running smote')
         transform = Transform('smote')
+
+        if n_class > 2 and len(data.y_train.shape) > 1:
+            data.y_train = np.argmax(data.y_train, axis=1)
+
         transform.apply(data)
+
+        if n_class > 2 and len(data.y_train.shape) == 1:
+            data.y_train = to_categorical(data.y_train, n_class)
+
         print('[get_model] Finished running smote')
     
     for _ in range(n_layers):

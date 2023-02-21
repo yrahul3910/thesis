@@ -6,14 +6,8 @@ from numpy import array
 from pprint import pprint
 
 
-def get_max_rows(group, col1='pd-pf', col2='f1'):
-    max_val1 = group[col1].max()
-
-    if len(group[group[col1] == max_val1]) == 1:
-        return group[group[col1] == max_val1]
-
-    max_val2 = group[col2].max()
-    return group[(group[col1] == max_val1) & (group[col2] == max_val2)]
+def get_ablation(group):
+    return group[group[group.columns[1:6]].sum(axis=1) > 3]
 
 
 pairs = {}
@@ -62,5 +56,6 @@ for i, (s, r) in enumerate(pairs.items()):
         t = {**t, 'pd-pf': perf[2], 'f1': perf[1], 'pd': perf[0], 'pf': perf[3], 'prec': perf[4]}
     df = df.append(t, ignore_index=True) 
 
-result = df.groupby('dataset').apply(get_max_rows)
+result = df.groupby('dataset').apply(get_ablation)
+print(result)
 result.to_csv('results.csv')
