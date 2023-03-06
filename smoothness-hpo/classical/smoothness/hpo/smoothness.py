@@ -16,21 +16,27 @@ def get_smoothness(learner, x_train, y_train):
     raise NotImplementedError
 
 
-@get_smoothness.register
+@get_smoothness.register(DecisionTreeClassifier)
 def _(learner: DecisionTreeClassifier, x_train: np.array, y_train: np.array) -> float:
     ...
 
 
-@get_smoothness.register
+@get_smoothness.register(GaussianNB)
 def _(learner: GaussianNB, x_train: np.array, y_train: np.array) -> float:
+    # Check number of classes
+    if len(y_train.shape) > 1:
+        y = np.argmax(y_train, axis=1)
+    else:
+        y = y_train.copy()
+
     # First, we need to compute mu
-    mu0 = np.mean(x_train[y_train == 0], axis=0)
-    mu1 = np.mean(x_train[y_train == 1], axis=0)
+    mu0 = np.mean(x_train[y == 0], axis=0)
+    mu1 = np.mean(x_train[y == 1], axis=0)
 
     # Compute mu
     mu = np.empty_like(x_train)
-    mu[y_train == 0] = mu0
-    mu[y_train == 1] = mu1
+    mu[y == 0] = mu0
+    mu[y == 1] = mu1
 
     # Compute x_minus_mu
     x_minus_mu = (x_train - mu).T
@@ -60,9 +66,19 @@ def _(learner: GaussianNB, x_train: np.array, y_train: np.array) -> float:
     return -np.linalg.norm(H)
 
 
-@get_smoothness.register
+@get_smoothness.register(LogisticRegression)
 def _(learner: LogisticRegression, x_train: np.array, y_train: np.array) -> float:
-    ...
+    # Check number of classes
+    if len(y_train.shape) > 1:
+        y = np.argmax(y_train, axis=1)
+    else:
+        y = y_train.copy()
+
+    # Get number of classes
+    k = len(np.unique(y))
+
+    # Compute smoothness
+    return (k - 1) / (k * x_train.shape[0]) * np.linalg.norm(x_train) / np.linalg.norm(learner.coef_)
 
 
 class SmoothnessHPO(BaseHPO):
@@ -91,11 +107,16 @@ class SmoothnessHPO(BaseHPO):
                 smoothness.append(get_smoothness(get_learner(self.learner, config), x_train, y_train))
 
             best_betas, best_configs = zip(*sorted(zip(smoothness, configs), reverse=True, key=lambda x: x[0]))
-            best_configs = list(best_configs[:keep_configs])
 
             best_score = (-1,)
 
             for beta, config in zip(best_betas, best_configs):
+                if keep_configs == 0:
+                    break
+
+                if beta == 0:
+                    continue
+
                 score = self.query_fn(config)
                 print('Beta:', beta, ' | Score:', score)
 
@@ -104,6 +125,8 @@ class SmoothnessHPO(BaseHPO):
 
                 if score > best_score:
                     best_score = score
+
+                keep_configs -= 1
 
             scores.append(best_score)
 

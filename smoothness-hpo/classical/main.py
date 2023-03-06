@@ -7,23 +7,15 @@ from imblearn.over_sampling import SMOTE
 from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import accuracy_score
 
-from smoothness.configs import learner_configs
-from smoothness.hpo.smoothness import SmoothnessHPO
+from smoothness.configs import config_space, config_space_hebo, learner_configs, learner_configs_hebo
+from smoothness.hpo import SmoothnessHPO, RandomHPO, HeboHPO
 from smoothness.data import load_issue_lifetime_prediction_data, remove_labels_legacy, remove_labels
 from smoothness.hpo.util import get_learner
-
-config_space = {
-    'preprocessor': ['normalize', 'standardize', 'minmax', 'maxabs', 'robust'],
-    'wfo': [False, True],
-    'smote': [False, True],
-    'ultrasample': [False, True],
-    'smooth': [False, True],
-}
 
 
 def data_fn(config: dict) -> Tuple[np.array, np.array, np.array, np.array]:
     n_class = 2
-    x_train, x_test, y_train, y_test = load_issue_lifetime_prediction_data('eclipse.csv', n_class)
+    x_train, x_test, y_train, y_test = load_issue_lifetime_prediction_data('eclipse', n_class)
     x_train = np.array(x_train)
     x_test = np.array(x_test)
     y_train = np.array(y_train)
@@ -88,10 +80,34 @@ def query_fn(config: dict):
     return accuracy_score(y_train, preds)
 
 
-for learner in ['nb']:
-    hpo_space = config_space | learner_configs[learner]
+def run_hpo(name: str, learner: str):
+    if name == 'smoothness':
+        hpo_space = config_space | learner_configs[learner]
 
-    hpo = SmoothnessHPO(hpo_space, learner, query_fn, data_fn)
-    scores, time = hpo.run(1, 30)
+        hpo = SmoothnessHPO(hpo_space, learner, query_fn, data_fn)
+        scores, time = hpo.run(1, 30)
 
-    print(f'Accuracy: {np.median(scores)}\nTime: {time}')
+        print(f'Accuracy: {np.median(scores)}\nTime: {time}')
+    elif name == 'random':
+        hpo_space = config_space | learner_configs[learner]
+
+        hpo = RandomHPO(hpo_space, learner, query_fn)
+        scores, time = hpo.run(1, 5)
+
+        print(f'Accuracy: {np.median(scores)}\nTime: {time}')
+    elif name == 'hebo':
+        hpo_space = config_space_hebo | learner_configs_hebo[learner]
+
+        hpo = HeboHPO(hpo_space, learner, query_fn)
+        scores, time = hpo.run(1, 5)
+
+        print(f'Accuracy: {np.median(scores)}\nTime: {time}')
+    else:
+        raise ValueError(f'Unknown HPO method: {name}')
+
+
+if __name__ == '__main__':
+    learner = 'nb'
+    hpo_method = 'smoothness'
+
+    run_hpo(hpo_method, learner)
