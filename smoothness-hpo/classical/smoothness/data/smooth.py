@@ -24,7 +24,10 @@ def remove_labels_legacy(x_train: np.array, y_train: np.array) -> Tuple[np.array
     tree = KDTree(x_rest)
     _, idx = tree.query(x_lost, k=int(np.sqrt(np.sqrt(len(x_rest)))), p=1)
     y_lost = mode(y_rest[idx], axis=1)[0]
-    y_lost = y_lost.reshape((y_lost.shape[0], y_lost.shape[-1]))
+
+    y_lost = y_lost.reshape(-1)
+
+    print(y_lost.shape, y_rest.shape)
 
     assert len(x_lost) == len(y_lost)
 

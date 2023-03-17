@@ -11,6 +11,12 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 
 
+def _max(impurity: Callable, *args):
+    return max(
+        [abs(impurity(left) - impurity(right)) for left, right in args if left != -1 and right != -1]
+    )
+
+
 @singledispatch
 def get_smoothness(learner, x_train, y_train):
     raise NotImplementedError
@@ -18,17 +24,60 @@ def get_smoothness(learner, x_train, y_train):
 
 @get_smoothness.register(DecisionTreeClassifier)
 def _(learner: DecisionTreeClassifier, x_train: np.array, y_train: np.array) -> float:
-    ...
-
-
-@get_smoothness.register(GaussianNB)
-def _(learner: GaussianNB, x_train: np.array, y_train: np.array) -> float:
     # Check number of classes
     if len(y_train.shape) > 1:
         y = np.argmax(y_train, axis=1)
     else:
         y = y_train.copy()
 
+    learner.fit(x_train, y)
+
+    # Traverse the tree structure
+    n_nodes = learner.tree_.node_count
+    children_left = learner.tree_.children_left
+    children_right = learner.tree_.children_right
+    impurity = learner.tree_.impurity
+
+    max_nabla = 0.
+
+    for i in range(n_nodes):
+        if children_left[i] != children_right[i]:
+            # Internal node
+            nabla = _max(
+                impurity,
+                # Check the nodes
+                (children_left[i] - children_right[i]),
+                # Check the intersections. Imagine the following:
+                #  |-----|-----|
+                #  |  1  |  2  |
+                #  |     |-----|
+                #  |     |     |
+                #  |-----|  4  |
+                #  |  3  |     |
+                #  |     |     |
+                #  |-----|-----|
+                #
+                # TODO: Add distances, since this distance will not be same as above
+                (children_left[children_left[i]] - children_left[children_right[i]]),  # 1, 2
+                (children_left[children_left[i]], children_right[children_right[i]]),  # 1, 4
+                (children_left[children_right[i]] - children_right[children_left[i]]),
+                (children_right[children_left[i]] - children_right[children_left[i]]),
+                (children_left[children_right[i]] - children_right[children_right[i]])
+            )
+
+            if nabla > max_nabla:
+                max_nabla = nabla
+
+    return max_nabla
+
+
+@get_smoothness.register(GaussianNB)
+def _(learner: GaussianNB, x_train: np.array, y_train: np.array) -> float:
+    if len(y_train.shape) == 1:
+        y = y_train.copy()
+    else:
+        y = np.argmax(y_train, axis=1)
+    
     # First, we need to compute mu
     mu0 = np.mean(x_train[y == 0], axis=0)
     mu1 = np.mean(x_train[y == 1], axis=0)
@@ -74,6 +123,8 @@ def _(learner: LogisticRegression, x_train: np.array, y_train: np.array) -> floa
     else:
         y = y_train.copy()
 
+    learner.fit(x_train, y)
+
     # Get number of classes
     k = len(np.unique(y))
 
@@ -107,16 +158,11 @@ class SmoothnessHPO(BaseHPO):
                 smoothness.append(get_smoothness(get_learner(self.learner, config), x_train, y_train))
 
             best_betas, best_configs = zip(*sorted(zip(smoothness, configs), reverse=True, key=lambda x: x[0]))
+            best_configs = list(best_configs[:keep_configs])
 
             best_score = (-1,)
 
             for beta, config in zip(best_betas, best_configs):
-                if keep_configs == 0:
-                    break
-
-                if beta == 0:
-                    continue
-
                 score = self.query_fn(config)
                 print('Beta:', beta, ' | Score:', score)
 
@@ -125,8 +171,6 @@ class SmoothnessHPO(BaseHPO):
 
                 if score > best_score:
                     best_score = score
-
-                keep_configs -= 1
 
             scores.append(best_score)
 

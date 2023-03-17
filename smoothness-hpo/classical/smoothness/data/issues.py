@@ -3,7 +3,6 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
 
 
 def split_data(filename: str, x_train: np.array, x_test: np.array, y_train: np.array, y_test: np.array,
@@ -61,10 +60,6 @@ def split_data(filename: str, x_train: np.array, x_test: np.array, y_train: np.a
                                                                                                                   y_test < 21,
                                                                                                                   7,
                                                                                                                   8))))))))
-
-    if n_classes > 2:
-        y_train = to_categorical(y_train, num_classes=n_classes, dtype=int)
-        y_test = to_categorical(y_test, num_classes=n_classes, dtype=int)
 
     return x_train, x_test, y_train, y_test
 

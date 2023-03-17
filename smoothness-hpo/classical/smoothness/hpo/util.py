@@ -1,6 +1,7 @@
 import random
 from typing import Union
 
+from raise_utils.learners import FeedforwardDL
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
@@ -29,7 +30,7 @@ def get_many_random_hyperparams(options: dict, n: int) -> list:
     return hyperparams
 
 
-def get_learner(learner: str, config: dict) -> Union[DecisionTreeClassifier, LogisticRegression, GaussianNB]:
+def get_learner(learner: str, config: dict) -> Union[DecisionTreeClassifier, LogisticRegression, GaussianNB, FeedforwardDL]:
     """
     Get a learner from a config.
     """
@@ -44,9 +45,16 @@ def get_learner(learner: str, config: dict) -> Union[DecisionTreeClassifier, Log
     elif learner == 'logistic':
         return LogisticRegression(
             penalty=config['penalty'],
+            solver='saga',
             C=config['C']
         )
     elif learner == 'nb':
         return GaussianNB()
+    elif learner == 'ff':
+        return FeedforwardDL(
+            n_units=config['n_units'],
+            n_layers=config['n_layers'],
+            n_epochs=100
+        )
     else:
         raise ValueError(f'Unknown learner: {learner}')
