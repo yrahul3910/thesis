@@ -11,68 +11,18 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 
 
-def _max(impurity: Callable, *args):
-    return max(
-        [abs(impurity(left) - impurity(right)) for left, right in args if left != -1 and right != -1]
-    )
-
-
 @singledispatch
 def get_smoothness(learner, x_train, y_train):
     raise NotImplementedError
 
 
-@get_smoothness.register(DecisionTreeClassifier)
-def _(learner: DecisionTreeClassifier, x_train: np.array, y_train: np.array) -> float:
-    # Check number of classes
-    if len(y_train.shape) > 1:
-        y = np.argmax(y_train, axis=1)
-    else:
-        y = y_train.copy()
-
-    learner.fit(x_train, y)
-
-    # Traverse the tree structure
-    n_nodes = learner.tree_.node_count
-    children_left = learner.tree_.children_left
-    children_right = learner.tree_.children_right
-    impurity = learner.tree_.impurity
-
-    max_nabla = 0.
-
-    for i in range(n_nodes):
-        if children_left[i] != children_right[i]:
-            # Internal node
-            nabla = _max(
-                impurity,
-                # Check the nodes
-                (children_left[i] - children_right[i]),
-                # Check the intersections. Imagine the following:
-                #  |-----|-----|
-                #  |  1  |  2  |
-                #  |     |-----|
-                #  |     |     |
-                #  |-----|  4  |
-                #  |  3  |     |
-                #  |     |     |
-                #  |-----|-----|
-                #
-                # TODO: Add distances, since this distance will not be same as above
-                (children_left[children_left[i]] - children_left[children_right[i]]),  # 1, 2
-                (children_left[children_left[i]], children_right[children_right[i]]),  # 1, 4
-                (children_left[children_right[i]] - children_right[children_left[i]]),
-                (children_right[children_left[i]] - children_right[children_left[i]]),
-                (children_left[children_right[i]] - children_right[children_right[i]])
-            )
-
-            if nabla > max_nabla:
-                max_nabla = nabla
-
-    return max_nabla
-
-
 @get_smoothness.register(GaussianNB)
 def _(learner: GaussianNB, x_train: np.array, y_train: np.array) -> float:
+    # This function computes the gradient of the Hessian of the negative log-likelihood
+    # of the Gaussian model.
+    # The function returns the negative of the Frobenius norm of the gradient of the
+    # Hessian of the negative log-likelihood of the Gaussian model.
+
     if len(y_train.shape) == 1:
         y = y_train.copy()
     else:
