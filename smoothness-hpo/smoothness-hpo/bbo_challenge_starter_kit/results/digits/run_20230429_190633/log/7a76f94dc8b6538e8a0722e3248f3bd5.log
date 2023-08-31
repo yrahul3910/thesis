@@ -1,0 +1,855 @@
+running: {'--uuid': '7a76f94dc8b6538e8a0722e3248f3bd5', '-db-root': '/home/ryedida/bbo_challenge_starter_kit/output', '--opt-root': '/home/ryedida/bbo_challenge_starter_kit/example_submissions', '--data-root': None, '--db': 'run_20230429_190633', '--opt': 'skopt', '--data': 'digits', '--classifier': 'MLP-adam', '--metric': 'nll', '--calls': 15, '--suggestions': 1, '--jobs-file': None, '--verbose': False, 'dry_run': False, 'rev': 'a376313', 'opt_rev': '0.9.0'}
+cmd: python skopt/optimizer.py -c MLP-adam -d digits -o skopt -u 7a76f94dc8b6538e8a0722e3248f3bd5 -m nll -n 15 -p 1 -dir /home/ryedida/bbo_challenge_starter_kit/output -b run_20230429_190633
+/home/ryedida/.local/lib/python3.9/site-packages/sklearn/neural_network/_multilayer_perceptron.py:605: UserWarning: Got `batch_size` less than 1 or larger than sample size. It is going to be clipped
+  warnings.warn(
+
+/home/ryedida/.local/lib/python3.9/site-packages/sklearn/neural_network/_multilayer_perceptron.py:686: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+  warnings.warn(
+
+computed signature: ([{'alpha': 0.019628224813442792, 'batch_size': 182, 'beta_1': 0.9410202200271762, 'beta_2': 0.9998021557676793, 'epsilon': 1.8662266976518e-08, 'hidden_layer_sizes': 147, 'learning_rate_init': 0.0005627932047415167, 'tol': 0.03690557729213761, 'validation_fraction': 0.8846827852548593}, {'alpha': 0.0019982467392329444, 'batch_size': 200, 'beta_1': 0.919111482530466, 'beta_2': 0.9998488260436156, 'epsilon': 5.981221901152555e-07, 'hidden_layer_sizes': 61, 'learning_rate_init': 2.2310905607443014e-05, 'tol': 1.2046852412030316e-05, 'validation_fraction': 0.8117896445826539}, {'alpha': 0.46659545670218433, 'batch_size': 219, 'beta_1': 0.9889789783750891, 'beta_2': 0.9999896868093284, 'epsilon': 2.4234724484675948e-08, 'hidden_layer_sizes': 167, 'learning_rate_init': 2.972334644335654e-05, 'tol': 0.0036281404040243792, 'validation_fraction': 0.17260651658522078}, {'alpha': 4.656005689076002, 'batch_size': 135, 'beta_1': 0.870503881627747, 'beta_2': 0.9948873266941017, 'epsilon': 2.1023308743480125e-07, 'hidden_layer_sizes': 118, 'learning_rate_init': 0.0018781738757161913, 'tol': 1.1889379831773004e-05, 'validation_fraction': 0.6264327093752792}, {'alpha': 0.04705159350400542, 'batch_size': 158, 'beta_1': 0.9870884262730957, 'beta_2': 0.9999596874382349, 'epsilon': 1.1981845126013875e-08, 'hidden_layer_sizes': 116, 'learning_rate_init': 0.00617340520407431, 'tol': 1.741413418158619e-05, 'validation_fraction': 0.6754299026638921}], [4.8709522768835765, 9.712622772033223, 5.950791832993735, 0.19438427080405424, 0.251902166999456])
+/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/signatures.py:85: RuntimeWarning: Signature diverged on MLP-adam_digits_nll betwen [4.71022664 9.71262277 5.92543888 0.18972466 0.25190217] and [ 4.87095228 10.02890359  5.95079183  0.19438427  0.26094505]
+  warnings.warn(
+
+Signature errors:
+                            0         1         2        3         4       max
+MLP-adam_digits_nll  0.160726  0.316281  0.025353  0.00466  0.009043  0.316281
+max                  0.160726  0.316281  0.025353  0.00466  0.009043  0.316281
+starting sklearn study skopt MLP-adam digits nll 15 1
+with data root: None
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 395, in ask
+    x = opt.ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 367, in ask
+    return self._ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 434, in _ask
+    return self.space.rvs(random_state=self.rng)[0]
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 900, in rvs
+    columns.append(dim.rvs(n_samples=n_samples, random_state=rng))
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 158, in rvs
+    return self.inverse_transform(samples)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 528, in inverse_transform
+    inv_transform = super(Integer, self).inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 168, in inverse_transform
+    return self.transformer.inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 309, in inverse_transform
+    X = transformer.inverse_transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 275, in inverse_transform
+    return np.round(X_orig).astype(np.int)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003940 iter 0 next_points [{'alpha': 2.3218184448137387, 'batch_size': 64, 'beta_1': 0.9847283698535558, 'beta_2': 0.9718124597003971, 'epsilon': 4.285122406357551e-09, 'hidden_layer_sizes': 159, 'learning_rate_init': 0.000564906250776565, 'tol': 3.423742190527479e-05, 'validation_fraction': 0.49870254836709976}]
+function_evaluation time 1.538916 value 0.184491 suggestion {'alpha': 2.3218184448137387, 'batch_size': 64, 'beta_1': 0.9847283698535558, 'beta_2': 0.9718124597003971, 'epsilon': 4.285122406357551e-09, 'hidden_layer_sizes': 159, 'learning_rate_init': 0.000564906250776565, 'tol': 3.423742190527479e-05, 'validation_fraction': 0.49870254836709976}
+observation time 0.000181, current best 0.184491 at iter 0
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 395, in ask
+    x = opt.ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 367, in ask
+    return self._ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 434, in _ask
+    return self.space.rvs(random_state=self.rng)[0]
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 900, in rvs
+    columns.append(dim.rvs(n_samples=n_samples, random_state=rng))
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 158, in rvs
+    return self.inverse_transform(samples)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 528, in inverse_transform
+    inv_transform = super(Integer, self).inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 168, in inverse_transform
+    return self.transformer.inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 309, in inverse_transform
+    X = transformer.inverse_transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 275, in inverse_transform
+    return np.round(X_orig).astype(np.int)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003513 iter 1 next_points [{'alpha': 0.018126765746416338, 'batch_size': 89, 'beta_1': 0.5411320033239091, 'beta_2': 0.9993153786830575, 'epsilon': 2.0746257460447273e-09, 'hidden_layer_sizes': 121, 'learning_rate_init': 2.9327286480696406e-05, 'tol': 0.027739283556642996, 'validation_fraction': 0.8230878331603716}]
+function_evaluation time 0.216053 value 9.661219 suggestion {'alpha': 0.018126765746416338, 'batch_size': 89, 'beta_1': 0.5411320033239091, 'beta_2': 0.9993153786830575, 'epsilon': 2.0746257460447273e-09, 'hidden_layer_sizes': 121, 'learning_rate_init': 2.9327286480696406e-05, 'tol': 0.027739283556642996, 'validation_fraction': 0.8230878331603716}
+observation time 0.000154, current best 0.184491 at iter 1
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 395, in ask
+    x = opt.ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 367, in ask
+    return self._ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 434, in _ask
+    return self.space.rvs(random_state=self.rng)[0]
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 900, in rvs
+    columns.append(dim.rvs(n_samples=n_samples, random_state=rng))
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 158, in rvs
+    return self.inverse_transform(samples)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 528, in inverse_transform
+    inv_transform = super(Integer, self).inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 168, in inverse_transform
+    return self.transformer.inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 309, in inverse_transform
+    X = transformer.inverse_transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 275, in inverse_transform
+    return np.round(X_orig).astype(np.int)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003162 iter 2 next_points [{'alpha': 7.710681166445785, 'batch_size': 104, 'beta_1': 0.9048446085826617, 'beta_2': 0.9999861967962068, 'epsilon': 7.815757538641768e-09, 'hidden_layer_sizes': 88, 'learning_rate_init': 1.5326124471871058e-05, 'tol': 0.004577643019911464, 'validation_fraction': 0.3446566812007539}]
+function_evaluation time 0.500633 value 8.044813 suggestion {'alpha': 7.710681166445785, 'batch_size': 104, 'beta_1': 0.9048446085826617, 'beta_2': 0.9999861967962068, 'epsilon': 7.815757538641768e-09, 'hidden_layer_sizes': 88, 'learning_rate_init': 1.5326124471871058e-05, 'tol': 0.004577643019911464, 'validation_fraction': 0.3446566812007539}
+observation time 0.000157, current best 0.184491 at iter 2
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 395, in ask
+    x = opt.ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 367, in ask
+    return self._ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 434, in _ask
+    return self.space.rvs(random_state=self.rng)[0]
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 900, in rvs
+    columns.append(dim.rvs(n_samples=n_samples, random_state=rng))
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 158, in rvs
+    return self.inverse_transform(samples)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 528, in inverse_transform
+    inv_transform = super(Integer, self).inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 168, in inverse_transform
+    return self.transformer.inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 309, in inverse_transform
+    X = transformer.inverse_transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 275, in inverse_transform
+    return np.round(X_orig).astype(np.int)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003551 iter 3 next_points [{'alpha': 0.3877227419211975, 'batch_size': 27, 'beta_1': 0.9364805628110685, 'beta_2': 0.9977866817967751, 'epsilon': 1.7634901079884564e-08, 'hidden_layer_sizes': 50, 'learning_rate_init': 0.0027898549048365313, 'tol': 3.775694231923944e-05, 'validation_fraction': 0.206304025584965}]
+function_evaluation time 1.567026 value 0.105721 suggestion {'alpha': 0.3877227419211975, 'batch_size': 27, 'beta_1': 0.9364805628110685, 'beta_2': 0.9977866817967751, 'epsilon': 1.7634901079884564e-08, 'hidden_layer_sizes': 50, 'learning_rate_init': 0.0027898549048365313, 'tol': 3.775694231923944e-05, 'validation_fraction': 0.206304025584965}
+observation time 0.000168, current best 0.105721 at iter 3
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 395, in ask
+    x = opt.ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 367, in ask
+    return self._ask()
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 434, in _ask
+    return self.space.rvs(random_state=self.rng)[0]
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 900, in rvs
+    columns.append(dim.rvs(n_samples=n_samples, random_state=rng))
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 158, in rvs
+    return self.inverse_transform(samples)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 528, in inverse_transform
+    inv_transform = super(Integer, self).inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 168, in inverse_transform
+    return self.transformer.inverse_transform(Xt)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 309, in inverse_transform
+    X = transformer.inverse_transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 275, in inverse_transform
+    return np.round(X_orig).astype(np.int)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003170 iter 4 next_points [{'alpha': 2.027135542108771e-05, 'batch_size': 245, 'beta_1': 0.9239905859211704, 'beta_2': 0.9977617579072162, 'epsilon': 2.826566123073541e-08, 'hidden_layer_sizes': 190, 'learning_rate_init': 9.435035407655085e-05, 'tol': 0.03453927696648719, 'validation_fraction': 0.8663344678062939}]
+/home/ryedida/.local/lib/python3.9/site-packages/sklearn/neural_network/_multilayer_perceptron.py:605: UserWarning: Got `batch_size` less than 1 or larger than sample size. It is going to be clipped
+  warnings.warn(
+
+function_evaluation time 0.212433 value 7.107550 suggestion {'alpha': 2.027135542108771e-05, 'batch_size': 245, 'beta_1': 0.9239905859211704, 'beta_2': 0.9977617579072162, 'epsilon': 2.826566123073541e-08, 'hidden_layer_sizes': 190, 'learning_rate_init': 9.435035407655085e-05, 'tol': 0.03453927696648719, 'validation_fraction': 0.8663344678062939}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000853, current best 0.105721 at iter 4
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003017 iter 5 next_points [{'alpha': 0.006212421460680518, 'batch_size': 35, 'beta_1': 0.9879218188400891, 'beta_2': 0.9747427632223925, 'epsilon': 1.5616133910667778e-08, 'hidden_layer_sizes': 99, 'learning_rate_init': 0.0005339999321440048, 'tol': 0.0001786955118268069, 'validation_fraction': 0.8493240143611867}]
+function_evaluation time 1.154463 value 0.445578 suggestion {'alpha': 0.006212421460680518, 'batch_size': 35, 'beta_1': 0.9879218188400891, 'beta_2': 0.9747427632223925, 'epsilon': 1.5616133910667778e-08, 'hidden_layer_sizes': 99, 'learning_rate_init': 0.0005339999321440048, 'tol': 0.0001786955118268069, 'validation_fraction': 0.8493240143611867}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000923, current best 0.105721 at iter 5
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003029 iter 6 next_points [{'alpha': 0.00024308105473675972, 'batch_size': 168, 'beta_1': 0.8434948467997379, 'beta_2': 0.9855390875763095, 'epsilon': 2.113772024947793e-07, 'hidden_layer_sizes': 187, 'learning_rate_init': 6.602583185153564e-05, 'tol': 0.0018183666129347345, 'validation_fraction': 0.26543366605375873}]
+function_evaluation time 4.015774 value 1.821450 suggestion {'alpha': 0.00024308105473675972, 'batch_size': 168, 'beta_1': 0.8434948467997379, 'beta_2': 0.9855390875763095, 'epsilon': 2.113772024947793e-07, 'hidden_layer_sizes': 187, 'learning_rate_init': 6.602583185153564e-05, 'tol': 0.0018183666129347345, 'validation_fraction': 0.26543366605375873}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000843, current best 0.105721 at iter 6
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.002978 iter 7 next_points [{'alpha': 0.00024366486432332433, 'batch_size': 244, 'beta_1': 0.9664987959423078, 'beta_2': 0.9997644074880647, 'epsilon': 3.63476406375167e-08, 'hidden_layer_sizes': 67, 'learning_rate_init': 0.0001326020323843706, 'tol': 0.004951535913224145, 'validation_fraction': 0.22762508873937853}]
+function_evaluation time 2.017108 value 1.493320 suggestion {'alpha': 0.00024366486432332433, 'batch_size': 244, 'beta_1': 0.9664987959423078, 'beta_2': 0.9997644074880647, 'epsilon': 3.63476406375167e-08, 'hidden_layer_sizes': 67, 'learning_rate_init': 0.0001326020323843706, 'tol': 0.004951535913224145, 'validation_fraction': 0.22762508873937853}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000823, current best 0.105721 at iter 7
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003432 iter 8 next_points [{'alpha': 0.011286138892083556, 'batch_size': 83, 'beta_1': 0.9618553305393605, 'beta_2': 0.9997915735198432, 'epsilon': 6.058440090617417e-08, 'hidden_layer_sizes': 143, 'learning_rate_init': 1.566166090154102e-05, 'tol': 0.07762744118517913, 'validation_fraction': 0.2537363919212268}]
+function_evaluation time 0.525186 value 7.185570 suggestion {'alpha': 0.011286138892083556, 'batch_size': 83, 'beta_1': 0.9618553305393605, 'beta_2': 0.9997915735198432, 'epsilon': 6.058440090617417e-08, 'hidden_layer_sizes': 143, 'learning_rate_init': 1.566166090154102e-05, 'tol': 0.07762744118517913, 'validation_fraction': 0.2537363919212268}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000851, current best 0.105721 at iter 8
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.002981 iter 9 next_points [{'alpha': 0.0014576170227030981, 'batch_size': 210, 'beta_1': 0.9638154230962676, 'beta_2': 0.9999965568204588, 'epsilon': 5.852503153692018e-07, 'hidden_layer_sizes': 178, 'learning_rate_init': 2.212710520543037e-05, 'tol': 0.0004894472263812999, 'validation_fraction': 0.8938112385510072}]
+/home/ryedida/.local/lib/python3.9/site-packages/sklearn/neural_network/_multilayer_perceptron.py:605: UserWarning: Got `batch_size` less than 1 or larger than sample size. It is going to be clipped
+  warnings.warn(
+
+function_evaluation time 0.327674 value 8.624955 suggestion {'alpha': 0.0014576170227030981, 'batch_size': 210, 'beta_1': 0.9638154230962676, 'beta_2': 0.9999965568204588, 'epsilon': 5.852503153692018e-07, 'hidden_layer_sizes': 178, 'learning_rate_init': 2.212710520543037e-05, 'tol': 0.0004894472263812999, 'validation_fraction': 0.8938112385510072}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000815, current best 0.105721 at iter 9
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003005 iter 10 next_points [{'alpha': 0.00030646230084517627, 'batch_size': 233, 'beta_1': 0.9735420517575339, 'beta_2': 0.9999958728718967, 'epsilon': 2.940469237493478e-07, 'hidden_layer_sizes': 111, 'learning_rate_init': 0.0031293079419782567, 'tol': 2.1412840471373414e-05, 'validation_fraction': 0.8465751168449286}]
+/home/ryedida/.local/lib/python3.9/site-packages/sklearn/neural_network/_multilayer_perceptron.py:605: UserWarning: Got `batch_size` less than 1 or larger than sample size. It is going to be clipped
+  warnings.warn(
+
+function_evaluation time 0.657339 value 0.455192 suggestion {'alpha': 0.00030646230084517627, 'batch_size': 233, 'beta_1': 0.9735420517575339, 'beta_2': 0.9999958728718967, 'epsilon': 2.940469237493478e-07, 'hidden_layer_sizes': 111, 'learning_rate_init': 0.0031293079419782567, 'tol': 2.1412840471373414e-05, 'validation_fraction': 0.8465751168449286}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.001693, current best 0.105721 at iter 10
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003047 iter 11 next_points [{'alpha': 2.0582280701115856, 'batch_size': 87, 'beta_1': 0.9779971486156419, 'beta_2': 0.9997915650303243, 'epsilon': 6.487635051859579e-07, 'hidden_layer_sizes': 80, 'learning_rate_init': 0.00043510058582260506, 'tol': 0.008006676318232852, 'validation_fraction': 0.32572945151819666}]
+function_evaluation time 0.997995 value 0.281110 suggestion {'alpha': 2.0582280701115856, 'batch_size': 87, 'beta_1': 0.9779971486156419, 'beta_2': 0.9997915650303243, 'epsilon': 6.487635051859579e-07, 'hidden_layer_sizes': 80, 'learning_rate_init': 0.00043510058582260506, 'tol': 0.008006676318232852, 'validation_fraction': 0.32572945151819666}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000845, current best 0.105721 at iter 11
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003045 iter 12 next_points [{'alpha': 0.006871384571909039, 'batch_size': 127, 'beta_1': 0.7609116286674337, 'beta_2': 0.9789391616002888, 'epsilon': 9.925432149591484e-07, 'hidden_layer_sizes': 195, 'learning_rate_init': 0.00046822673117176764, 'tol': 0.029757998430096442, 'validation_fraction': 0.7015961986025756}]
+function_evaluation time 0.535349 value 0.449757 suggestion {'alpha': 0.006871384571909039, 'batch_size': 127, 'beta_1': 0.7609116286674337, 'beta_2': 0.9789391616002888, 'epsilon': 9.925432149591484e-07, 'hidden_layer_sizes': 195, 'learning_rate_init': 0.00046822673117176764, 'tol': 0.029757998430096442, 'validation_fraction': 0.7015961986025756}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000854, current best 0.105721 at iter 12
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003048 iter 13 next_points [{'alpha': 0.4204555518250972, 'batch_size': 203, 'beta_1': 0.7773978605761689, 'beta_2': 0.9981751326376076, 'epsilon': 5.155414580567828e-07, 'hidden_layer_sizes': 97, 'learning_rate_init': 0.028546861626902113, 'tol': 0.0020633963219698105, 'validation_fraction': 0.407433310090347}]
+function_evaluation time 0.780919 value 0.154661 suggestion {'alpha': 0.4204555518250972, 'batch_size': 203, 'beta_1': 0.7773978605761689, 'beta_2': 0.9981751326376076, 'epsilon': 5.155414580567828e-07, 'hidden_layer_sizes': 97, 'learning_rate_init': 0.028546861626902113, 'tol': 0.0020633963219698105, 'validation_fraction': 0.407433310090347}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000865, current best 0.105721 at iter 13
+Failure in optimizer suggest. Falling back to random search.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 126, in run_study
+    next_points = optimizer.suggest(n_suggestions)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 116, in suggest
+    next_guess = self.skopt.ask(n_points=n_suggestions)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 390, in ask
+    opt = self.copy(random_state=self.rng.randint(0,
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 331, in copy
+    optimizer._tell(self.Xi, self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+suggestion time taken 0.003062 iter 14 next_points [{'alpha': 0.0006863191801191654, 'batch_size': 117, 'beta_1': 0.9715409412851626, 'beta_2': 0.9979626399219124, 'epsilon': 1.6096575524155937e-09, 'hidden_layer_sizes': 149, 'learning_rate_init': 0.0023684562766169855, 'tol': 0.006735165276930723, 'validation_fraction': 0.8756026469494363}]
+function_evaluation time 0.486770 value 0.500421 suggestion {'alpha': 0.0006863191801191654, 'batch_size': 117, 'beta_1': 0.9715409412851626, 'beta_2': 0.9979626399219124, 'epsilon': 1.6096575524155937e-09, 'hidden_layer_sizes': 149, 'learning_rate_init': 0.0023684562766169855, 'tol': 0.006735165276930723, 'validation_fraction': 0.8756026469494363}
+Failure in optimizer observe. Ignoring these observations.
+module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+Traceback (most recent call last):
+  File "/home/ryedida/.local/lib/python3.9/site-packages/bayesmark/experiment.py", line 172, in run_study
+    optimizer.observe(next_points, eval_list)
+  File "/home/ryedida/bbo_challenge_starter_kit/example_submissions/skopt/optimizer.py", line 146, in observe
+    self.skopt.tell(xx, yy)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 493, in tell
+    return self._tell(x, y, fit=fit)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/optimizer/optimizer.py", line 536, in _tell
+    est.fit(self.space.transform(self.Xi), self.yi)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 969, in transform
+    columns[j] = self.dimensions[j].transform(columns[j])
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/space.py", line 162, in transform
+    return self.transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 304, in transform
+    X = transformer.transform(X)
+  File "/home/ryedida/.local/lib/python3.9/site-packages/skopt/space/transformers.py", line 262, in transform
+    return (np.round(X).astype(np.int) - self.low) /\
+  File "/home/ryedida/.local/lib/python3.9/site-packages/numpy/__init__.py", line 305, in __getattr__
+    raise AttributeError(__former_attrs__[attr])
+AttributeError: module 'numpy' has no attribute 'int'.
+`np.int` was a deprecated alias for the builtin `int`. To avoid this error in existing code, use `int` by itself. Doing this will not modify any behavior and is safe. When replacing `np.int`, you may wish to use e.g. `np.int64` or `np.int32` to specify the precision. If you wish to review your current use, check the release note link for additional information.
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
+observation time 0.000870, current best 0.105721 at iter 14
+saving meta data: {'args': {'--uuid': '7a76f94dc8b6538e8a0722e3248f3bd5', '-db-root': '/home/ryedida/bbo_challenge_starter_kit/output', '--opt-root': '/home/ryedida/bbo_challenge_starter_kit/example_submissions', '--data-root': None, '--db': 'run_20230429_190633', '--opt': 'skopt', '--data': 'digits', '--classifier': 'MLP-adam', '--metric': 'nll', '--calls': 15, '--suggestions': 1, '--jobs-file': None, '--verbose': False, 'dry_run': False, 'rev': 'a376313', 'opt_rev': '0.9.0'}, 'signature': ([{'alpha': 0.019628224813442792, 'batch_size': 182, 'beta_1': 0.9410202200271762, 'beta_2': 0.9998021557676793, 'epsilon': 1.8662266976518e-08, 'hidden_layer_sizes': 147, 'learning_rate_init': 0.0005627932047415167, 'tol': 0.03690557729213761, 'validation_fraction': 0.8846827852548593}, {'alpha': 0.0019982467392329444, 'batch_size': 200, 'beta_1': 0.919111482530466, 'beta_2': 0.9998488260436156, 'epsilon': 5.981221901152555e-07, 'hidden_layer_sizes': 61, 'learning_rate_init': 2.2310905607443014e-05, 'tol': 1.2046852412030316e-05, 'validation_fraction': 0.8117896445826539}, {'alpha': 0.46659545670218433, 'batch_size': 219, 'beta_1': 0.9889789783750891, 'beta_2': 0.9999896868093284, 'epsilon': 2.4234724484675948e-08, 'hidden_layer_sizes': 167, 'learning_rate_init': 2.972334644335654e-05, 'tol': 0.0036281404040243792, 'validation_fraction': 0.17260651658522078}, {'alpha': 4.656005689076002, 'batch_size': 135, 'beta_1': 0.870503881627747, 'beta_2': 0.9948873266941017, 'epsilon': 2.1023308743480125e-07, 'hidden_layer_sizes': 118, 'learning_rate_init': 0.0018781738757161913, 'tol': 1.1889379831773004e-05, 'validation_fraction': 0.6264327093752792}, {'alpha': 0.04705159350400542, 'batch_size': 158, 'beta_1': 0.9870884262730957, 'beta_2': 0.9999596874382349, 'epsilon': 1.1981845126013875e-08, 'hidden_layer_sizes': 116, 'learning_rate_init': 0.00617340520407431, 'tol': 1.741413418158619e-05, 'validation_fraction': 0.6754299026638921}], [4.8709522768835765, 9.712622772033223, 5.950791832993735, 0.19438427080405424, 0.251902166999456])}
+saving results
+saving timing
+saving suggest log
+done
