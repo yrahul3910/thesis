@@ -6,7 +6,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from raise_utils.transforms import Transform
-from raise_utils.learners import Autoencoder
+from raise_utils.learners import Autoencoder, FeedforwardDL
 from raise_utils.data import Data
 from config import Config
 
@@ -16,8 +16,8 @@ from remove_labels import remove_labels
 
 
 options = {
-    'n_units': (2, 6),
-    'n_layers': (2, 5),
+    'n_units': (2, 20),
+    'n_layers': (2, 6),
     'transform': ['normalize', 'standardize', 'minmax', 'maxabs', 'robust'],
     'wfo': [False, True],
     'smote': [False, True],
@@ -66,7 +66,7 @@ def get_model(data: Data, config: Config) -> tuple:
         print('[get_model] Running smooth')
         data.x_train, data.y_train = remove_labels(data.x_train, data.y_train)
         print('[get_model] Finished running smooth')
-
+    
     if config.ultrasample:
         # Apply WFO
         print('[get_model] Running ultrasample:wfo')
@@ -84,38 +84,11 @@ def get_model(data: Data, config: Config) -> tuple:
 
         data.x_train = ae.encode(np.array(data.x_train))
         data.x_test = ae.encode(np.array(data.x_test))
-
-    learner = Sequential()
-    data.y_train = data.y_train.astype('float32')
-
-    data.x_train, data.x_test, data.y_train, data.y_test = \
-        map(np.array, (data.x_train, data.x_test, data.y_train, data.y_test))
-    data.y_train = data.y_train.squeeze()
-    data.y_test = data.y_test.squeeze()
-
-    if config.wfo:
-        print('[get_model] Running wfo')
-        transform = Transform('wfo')
-        transform.apply(data)
-        print('[get_model] Finished running wfo')
     
-    if config.smote:
-        print('[get_model] Running smote')
-        try:
-            transform = Transform('smote')
-            transform.apply(data)
-        except:
-            print('[get_model] Failed running smote')
+    model = FeedforwardDL(weighted=config.wfo, wfo=config.wfo, smote=config.smote, n_layers=config.n_layers, n_units=config.n_units, n_epochs=100, verbose=0)
+    model.set_data(*data)
 
-        print('[get_model] Finished running smote')
-    
-    for _ in range(config.n_layers):
-        learner.add(Dense(config.n_units, activation='relu'))
-    
-    learner.add(Dense(1, activation='sigmoid'))
-    learner.compile(loss='binary_crossentropy', optimizer='sgd')
-
-    return learner, data
+    return model, data
 
 
 def get_smoothness(data: Data, config: Config) -> float:

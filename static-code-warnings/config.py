@@ -13,3 +13,4 @@ class Config:
     smooth: bool = True
     transform: Literal['normalize', 'standardize',
                        'minmax', 'maxabs', 'robust'] = 'normalize'
+    

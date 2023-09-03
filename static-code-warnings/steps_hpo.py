@@ -7,56 +7,21 @@ from raise_utils.learners import FeedforwardDL, Autoencoder
 from raise_utils.data import Data
 from raise_utils.metrics import ClassificationMetrics
 from raise_utils.transforms import Transform
+from raise_utils.hyperparams import HPO, MetricObjective
 from sklearn.model_selection import train_test_split
-from dataclasses import asdict
-from skopt import gp_minimize
 from copy import deepcopy
 from config import Config
 from pprint import pprint
-from util import get_smoothness, get_many_random_hyperparams, get_best_results
+from util import get_model, options as hpo_space
 
 pyximport.install()
 
 from remove_labels import remove_labels
 
 
-hpo_space = [
-    (2, 6),  # n_units
-    (2, 5),  # n_layers
-    ['normalize', 'standardize', 'minmax', 'maxabs', 'robust'],  # transform
-    [False, True],  # wfo
-    [False, True],  # smote
-    [False, True],  # ultrasample
-    [False, True],  # smooth
-]
-
 datasets = ['ant', 'cassandra', 'commons', 'derby',
             'jmeter', 'lucene-solr', 'maven', 'tomcat']
 base_path = './data/'
-
-
-def config_to_bo(config: Config) -> list:
-    return [
-        config.n_units,
-        config.n_layers,
-        config.transform,
-        config.wfo,
-        config.smote,
-        config.ultrasample,
-        config.smooth
-    ]
-
-
-def get_config_from_bo(conf: list) -> Config:
-    return Config(
-        n_units=conf[0],
-        n_layers=conf[1],
-        transform=conf[2],
-        wfo=conf[3],
-        smote=conf[4],
-        ultrasample=conf[5],
-        smooth=conf[6]
-    )
 
 
 def load_data(dataset: str) -> Data:
@@ -161,8 +126,6 @@ def run_all_experiments():
     file_number = os.getenv('SLURM_JOB_ID') or random.randint(1, 10000)
     file = open(f'runs-{file_number}.txt', 'a')
 
-    initial_pop_size = 10
-
     for dataset in datasets:
         print(f'{dataset}:', file=file)
         data_orig = load_data(dataset)
@@ -170,46 +133,24 @@ def run_all_experiments():
         # 20 repeats
         results = []
         for _ in range(20):
-            configs = get_many_random_hyperparams(initial_pop_size)
-            config_smoothness = []
-            for config in configs:
-                data = deepcopy(data_orig)
-                print('[main] Computing smoothness for config:', config)
-                smoothness = get_smoothness(data, config)
-                print(f'Config: {config}\nSmoothness: {smoothness}', file=file)
-                file.flush()
-
-                config_smoothness.append(-smoothness)
+            load_model = lambda config: get_model(deepcopy(data_orig), Config(**config))[0]
+            obj = MetricObjective(['pd', 'pf', 'prec', 'auc'], deepcopy(data_orig), load_model)
+            hpo = HPO(
+                objective=obj,
+                space=hpo_space,
+                algorithm='hyperopt',
+                max_evals=10
+            )
+            config = hpo.run()
             
-            # Initialize BO
-            bo_configs = []
+            data = deepcopy(data_orig)
 
-            for i in range(5):
-                print('BO run:', i, file=file)
-                bo_result = gp_minimize(
-                    func=lambda conf: get_smoothness(deepcopy(data_orig), get_config_from_bo(conf)),
-                    dimensions=hpo_space,
-                    n_calls=20,
-                    acq_func='EI',
-                    x0=[config_to_bo(x) for x in configs],
-                    y0=config_smoothness
-                )
-                bo_configs.append(get_config_from_bo(bo_result.x))
+            model = load_model(config)
+            model.fit()
+            metrics = ClassificationMetrics(data.y_test, model.predict(data.x_test))
+            metrics.add_metrics(['pd', 'pf', 'prec', 'auc'])
+            results.append(metrics.get_metrics())
 
-            repeat_results = []
-            for config in bo_configs:
-                data = deepcopy(data_orig)
-                print(f'Running: {config}\n', file=file)
-
-                cur_results = run(data, config)
-                print('[main] Accuracy:', cur_results, file=file)
-                file.flush()
-
-                # Find the best of these
-                repeat_results.append(cur_results)
-
-            results.append(get_best_results(repeat_results)[0])
-            print(get_best_results(repeat_results)[0])
             print('', file=file)
         
         print('Median results:', file=file)

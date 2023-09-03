@@ -76,15 +76,9 @@ def run(data: Data, config: Config):
         data.y_test = 1. - data.y_test
 
         # Autoencode the inputs
-        loss = 1e4
-        tries = 0
-        while loss > 1e3 and tries < 5:
-            ae = Autoencoder(n_layers=2, n_units=[10, 7], n_out=5)
-            ae.set_data(*data)
-            ae.fit()
-
-            loss = ae.model.history.history['loss'][-1]
-            tries += 1
+        ae = Autoencoder(n_layers=2, n_units=[10, 7], n_out=5)
+        ae.set_data(*data)
+        ae.fit()
 
         data.x_train = ae.encode(np.array(data.x_train))
         data.x_test = ae.encode(np.array(data.x_test))
@@ -131,10 +125,8 @@ def run_all_experiments():
     file_number = os.getenv('SLURM_JOB_ID') or random.randint(1, 10000)
     file = open(f'runs-{file_number}.txt', 'a')
 
-    best_betas = []
-    best_configs = []
-    keep_configs = 5
-    num_configs = 30
+    keep_configs = 10
+    num_configs = 50
 
     for dataset in datasets:
         print(f'{dataset}:', file=file)
@@ -143,6 +135,8 @@ def run_all_experiments():
         # 20 repeats
         results = []
         for _ in range(20):
+            best_betas = []
+            best_configs = []
             configs = get_many_random_hyperparams(num_configs)
             repeat_results = []
             for config in configs:
