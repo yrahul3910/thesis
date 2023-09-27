@@ -11,7 +11,7 @@ from smoothness.hpo.base import BaseHPO
 class BohbHPO(BaseHPO):
     def run(self, n_runs: int, n_iters: int) -> Tuple[list, float]:
         """
-        Runs random HPO.
+        Runs BOHB HPO.
         :param n_runs: Number of runs to perform.
         :param n_iters: Number of iterations to explore.
         :return:

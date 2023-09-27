@@ -5,6 +5,7 @@
 * `Kruskal-Wallis test.ipynb`: Code for running the Kruskal-Wallis test and pairwise Mann-Whitney U-tests.
 * `bbo_challenge_starter_kit/`: Feedforward network code for the NeurIPS 2020 BBO Challenge.
 * `classical/`: Code for classical learners
+* `conv/`: Experiments with convolutional neural networks
 * `data/`: Link to datasets.
 * `results/`: Feedforward network results.
 * `smoothness-approximation/`: Experiments to test if a subset of the data can be used to compute $\beta-

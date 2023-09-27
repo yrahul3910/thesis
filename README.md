@@ -1,12 +1,14 @@
-# Generality of GHOST-v2
+# Thesis
 
-This repo will act as the definitive source of information for GHOST-v2. It will be updated as the project progresses. For multiple tasks, this repo checks if GHOST-v2 generalizes and if all components are necessary.
+This repo will act as the definitive source of code for my PhD thesis. It will be updated as the work progresses. This is NOT the only source of code, however. It is merely a part of it, and anything here should (in theory) be up-to-date.
 
 ## File descriptions
 
-* `defect-prediction`: Defect prediction ablation study
-* `issue_close_time`: Issue lifetime prediction ablation study
-* `smoothness-hpo`: A test to see if beta-smoothness can be used as a heuristic for HPO.
+* `defect-prediction`: Defect prediction ablation study for GHOST-v2
+* `email`: Wrapper around Amazon SES to send email notifications
+* `issue_close_time`: Issue lifetime prediction ablation study for GHOST-v2
+* `smoothness-hpo`: Experiments on using beta-smoothness as a heuristic for HPO.
+* `static-code-warnings`: I believe this is the code for beta-smoothness HPO (and random/BOHB) on static code data.
 
 ## Recommended Links
 
