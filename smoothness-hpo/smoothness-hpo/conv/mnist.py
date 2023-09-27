@@ -4,7 +4,7 @@ import random
 from copy import deepcopy
 from tensorflow.keras.datasets.mnist import load_data
 
-from src.util import load_defect_data, get_many_random_hyperparams, get_smoothness, run_experiment
+from src.util import get_many_random_hyperparams, get_smoothness, run_experiment
 
 
 hpo_space = {
