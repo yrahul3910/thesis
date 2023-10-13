@@ -1,85 +1,61 @@
 import random
+from typing import List, Tuple
+
 import numpy as np
-import pandas as pd
-from scipy.spatial import KDTree
-from scipy.stats import mode
-from raise_utils.transforms import Transform
-from raise_utils.learners import Autoencoder
-from raise_utils.data import Data, DataLoader
-from raise_utils.hooks import Hook
-from raise_utils.metrics import ClassificationMetrics
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras import backend as K
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, BatchNormalization
 
+from src.data import Dataset
+from src.config import Config
 
-def run_experiment(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: bool, smooth: bool, n_units: int,
-    n_layers: int, preprocessor: str) -> None:
+BATCH_SIZE=256
+
+def run_experiment(data: Dataset, config: Config, n_class: int = 10) -> float:
     print('[run_experiment] Getting model')
-    model, data = get_model(data, n_class, wfo, smote, ultrasample, smooth, n_units, n_layers, preprocessor)
+    model = get_model(data, config, n_class)
 
-    if n_class > 2 and len(data.y_train) == 1:
-        data.y_train = to_categorical(data.y_train, n_class)
-        data.y_test = to_categorical(data.y_test, n_class)
     print('[run_experiment] Got model')
-    model.fit(data.x_train, data.y_train, epochs=100, verbose=1, batch_size=128)
+    model.fit(data.x_train, data.y_train, epochs=50, verbose=1, batch_size=BATCH_SIZE)
     print('[run_experiment] Fit model')
 
-    if n_class == 2:
-        y_pred = (model.predict(data.x_test) > 0.5).astype('int32')
-    else:
-        y_pred = np.argmax(model.predict(data.x_test), axis=-1)
+    y_pred = np.argmax(model.predict(data.x_test), axis=-1)
     
-    if n_class > 2 and len(data.y_test) > 1:
+    if len(data.y_test.shape) > 1:
         data.y_test = np.argmax(data.y_test, axis=1)
 
-    metrics = ClassificationMetrics(data.y_test, y_pred)
-    metrics.add_metrics(['accuracy'])
-    return metrics.get_metrics()
+    return accuracy_score(data.y_test, y_pred)
 
 
-def get_smoothness(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: bool, smooth: bool, n_units: int,
-    n_layers: int, preprocessor: str) -> float:
-    print('[get_smoothness] Getting model')
-    model, data = get_model(data, n_class, wfo, smote, ultrasample, smooth, n_units, n_layers, preprocessor)
+def get_smoothness(data: Dataset, config: Config, n_class: int = 10) -> float:
+    model = get_model(data, config, n_class)
 
-    if n_class > 2 and len(data.y_train) == 1:
+    if n_class > 2 and len(data.y_train.shape) == 1:
         data.y_train = to_categorical(data.y_train, n_class)
         data.y_test = to_categorical(data.y_test, n_class)
-    print('[get_smoothness] Got model')
 
     # Fit for one epoch before computing smoothness
-    model.fit(data.x_train, data.y_train, epochs=1, verbose=1, batch_size=128)
-    print('[get_smoothness] Fit model')
+    model.fit(data.x_train, data.y_train, batch_size=BATCH_SIZE, epochs=1),
 
-    func = K.function([model.layers[0].input], [model.layers[-2].output])
-    batch_size = 128
-    Kz = 0.
-    Kw = 0.
+    Ka_func = K.function([model.layers[0].input], [model.layers[-2].output])
+
+    batch_size = BATCH_SIZE
+    best_mu = np.inf
     for i in range((len(data.x_train) - 1) // batch_size + 1):
         start_i = i * batch_size
         end_i = start_i + batch_size
         xb = data.x_train[start_i:end_i]
 
-        activ = np.linalg.norm(func([xb]))
-        if activ > Kz:
-            Kz = activ
-        
-        assert len(model.layers[-1].weights[0].shape) == 2
-        W = np.linalg.norm(model.layers[-1].weights[0])
-        if W > Kw:
-            Kw = W
+        mu = np.linalg.norm(Ka_func([xb])) / np.linalg.norm(model.layers[-1].weights[0])
+        if mu < best_mu and mu != np.inf:
+            best_mu = mu
 
-    if Kw == 0:
-        return 0.
-
-    return Kz / Kw
+    return best_mu
 
 
-def get_random_hyperparams(options: dict) -> dict:
+def get_random_hyperparams(options: dict) -> Config:
     """
     Get hyperparameters from options.
     """
@@ -89,7 +65,7 @@ def get_random_hyperparams(options: dict) -> dict:
             hyperparams[key] = random.choice(value)
         elif isinstance(value, tuple):
             hyperparams[key] = random.randint(value[0], value[1])
-    return hyperparams
+    return Config(**hyperparams)
 
 
 def get_many_random_hyperparams(options: dict, n: int) -> list:
@@ -102,178 +78,24 @@ def get_many_random_hyperparams(options: dict, n: int) -> list:
     return hyperparams
 
 
-def remove_labels_legacy(data: Data) -> Data:
-    # "Remove" labels
-    lost_idx = np.random.choice(
-        len(data.y_train), size=int(len(data.y_train) - np.sqrt(len(data.y_train))), replace=False)
-
-    x_lost = data.x_train[lost_idx]
-    x_rest = np.delete(data.x_train, lost_idx, axis=0)
-    y_lost = data.y_train[lost_idx]
-    y_rest = np.delete(data.y_train, lost_idx, axis=0)
-
-    if len(x_lost.shape) == 1:
-        x_lost = x_lost.reshape(1, -1)
-    if len(x_rest.shape) == 1:
-        x_rest = x_rest.reshape(1, -1)
-
-    # Impute data
-    tree = KDTree(x_rest)
-    _, idx = tree.query(x_lost, k = int(np.sqrt(np.sqrt(len(x_rest)))), p=1)
-    y_lost = mode(y_rest[idx], axis=1)[0]
-    y_lost = y_lost.reshape((y_lost.shape[0], y_lost.shape[-1]))
-
-    assert len(x_lost) == len(y_lost)
-
-    data.x_train = np.concatenate((x_lost, x_rest), axis=0)
-    data.y_train = np.concatenate((y_lost, y_rest), axis=0)
-    return data
-
-
-def get_model(data: Data, n_class: int, wfo: bool, smote: bool, ultrasample: bool, smooth: bool,
-    n_units: int, n_layers: int, preprocessor: str) -> tuple:
+def get_model(data: Dataset, config: Config, n_class: int = 10) -> Sequential:
     """
     Runs one experiment, given a Data instance.
 
     :param {Data} data - The dataset to run on, NOT preprocessed.
-    :param {str} name - The name of the experiment.
     :param {dict} config - The config to use. Must be one in the format used in `process_configs`.
+    :param {int} n_class - The number of classes in the dataset.
     """
-    transform = Transform(preprocessor)
-    transform.apply(data)
-
-    if smooth:
-        data.x_train = np.array(data.x_train)
-        data.y_train = np.array(data.y_train)
-
-        print('[get_model] Running smooth')
-        if n_class == 2:
-            data.x_train, data.y_train = remove_labels(data.x_train, data.y_train)
-        else:
-            data = remove_labels_legacy(data)
-        print('[get_model] Finished running smooth')
-
-    if ultrasample:
-        # Apply WFO
-        print('[get_model] Running ultrasample:wfo')
-        transform = Transform('wfo')
-        transform.apply(data)
-        print('[get_model] Finished running ultrasample:wfo')
-
-        # Reverse labels
-        data.y_train = 1. - data.y_train
-        data.y_test = 1. - data.y_test
-
-        # Autoencode the inputs
-        loss = 1e4
-        while loss > 1e3:
-            ae = Autoencoder(n_layers=2, n_units=[10, 7], n_out=5)
-            ae.set_data(*data)
-            print('[get_model] Fitting autoencoder')
-            ae.fit()
-            print('[get_model] Fit autoencoder')
-
-            loss = ae.model.history.history['loss'][-1]
-
-        data.x_train = ae.encode(np.array(data.x_train))
-        data.x_test = ae.encode(np.array(data.x_test))
-
     learner = Sequential()
-    data.y_train = data.y_train.astype('float32')
 
-    data.x_train, data.x_test, data.y_train, data.y_test = \
-        map(np.array, (data.x_train, data.x_test, data.y_train, data.y_test))
-    data.y_train = data.y_train.squeeze()
-    data.y_test = data.y_test.squeeze()
+    for i in range(config.n_blocks):
+        learner.add(Conv2D(config.n_filters, config.kernel_size, padding=config.padding, kernel_initializer='he_uniform', activation='relu'))
+        learner.add(MaxPooling2D(pool_size=(2, 2)))
 
-    if wfo:
-        print('[get_model] Running wfo')
-        transform = Transform('wfo')
-        transform.apply(data)
-        print('[get_model] Finished running wfo')
+    learner.add(Flatten())
+    learner.add(Dense(128, activation='relu', kernel_initializer='he_uniform'))
+    learner.add(Dense(n_class, activation='softmax'))
     
-    if smote:
-        print('[get_model] Running smote')
-        transform = Transform('smote')
+    learner.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-        if n_class > 2 and len(data.y_train.shape) > 1:
-            data.y_train = np.argmax(data.y_train, axis=1)
-
-        transform.apply(data)
-
-        if n_class > 2 and len(data.y_train.shape) == 1:
-            data.y_train = to_categorical(data.y_train, n_class)
-
-        print('[get_model] Finished running smote')
-    
-    for _ in range(n_layers):
-        learner.add(Dense(n_units, activation='relu'))
-    
-    if n_class == 2:
-        learner.add(Dense(1, activation='sigmoid'))
-    else:
-        learner.add(Dense(n_class, activation='softmax'))
-    
-    learner.compile(loss='binary_crossentropy' if n_class == 2 else 'categorical_crossentropy', optimizer='sgd')
-
-    return learner, data
-
-
-def split_data(filename: str, data: Data, n_classes: int) -> Data:
-    if n_classes == 2:
-        if filename == 'firefox.csv':
-            data.y_train = data.y_train < 4
-            data.y_test = data.y_test < 4
-        elif filename == 'chromium.csv':
-            data.y_train = data.y_train < 5
-            data.y_test = data.y_test < 5
-        else:
-            data.y_train = data.y_train < 6
-            data.y_test = data.y_test < 6
-    elif n_classes == 3:
-        data.y_train = np.where(data.y_train < 2, 0,
-                                np.where(data.y_train < 6, 1, 2))
-        data.y_test = np.where(
-            data.y_test < 2, 0, np.where(data.y_test < 6, 1, 2))
-    elif n_classes == 5:
-        data.y_train = np.where(data.y_train < 1, 0, np.where(data.y_train < 3, 1, np.where(
-            data.y_train < 6, 2, np.where(data.y_train < 21, 3, 4))))
-        data.y_test = np.where(data.y_test < 1, 0, np.where(data.y_test < 3, 1, np.where(
-            data.y_test < 6, 2, np.where(data.y_test < 21, 3, 4))))
-    elif n_classes == 7:
-        data.y_train = np.where(data.y_train < 1, 0, np.where(data.y_train < 2, 1, np.where(data.y_train < 3, 2, np.where(
-            data.y_train < 6, 3, np.where(data.y_train < 11, 4, np.where(data.y_train < 21, 5, 6))))))
-        data.y_test = np.where(data.y_test < 1, 0, np.where(data.y_test < 2, 1, np.where(data.y_test < 3, 2, np.where(
-            data.y_test < 6, 3, np.where(data.y_test < 11, 4, np.where(data.y_test < 21, 5, 6))))))
-    else:
-        data.y_train = np.where(data.y_train < 1, 0, np.where(data.y_train < 2, 1, np.where(data.y_train < 3, 2, np.where(data.y_train < 4, 3, np.where(
-            data.y_train < 6, 4, np.where(data.y_train < 8, 5, np.where(data.y_train < 11, 6, np.where(data.y_train < 21, 7, 8))))))))
-        data.y_test = np.where(data.y_test < 1, 0, np.where(data.y_test < 2, 1, np.where(data.y_test < 3, 2, np.where(data.y_test < 4, 3, np.where(
-            data.y_test < 6, 4, np.where(data.y_test < 8, 5, np.where(data.y_test < 11, 6, np.where(data.y_test < 21, 7, 8))))))))
-
-    if n_classes > 2:
-        data.y_train = to_categorical(data.y_train, num_classes=n_classes, dtype=int)
-        data.y_test = to_categorical(data.y_test, num_classes=n_classes, dtype=int)
-
-    return data
-
-
-def load_issue_lifetime_prediction_data(filename: str, n_classes: int) -> Data:
-    df = pd.read_csv(f'./data/{filename}.csv')
-    df.drop(['Unnamed: 0', 'bugID'], axis=1, inplace=True)
-    _df = df[['s1', 's2', 's3', 's4', 's5', 's6', 's8', 'y']]
-    _df['s70'] = df['s7'].apply(lambda x: eval(x)[0])
-    _df['s71'] = df['s7'].apply(lambda x: eval(x)[1])
-    _df['s72'] = df['s7'].apply(lambda x: eval(x)[2])
-    _df['s90'] = df['s9'].apply(lambda x: eval(x)[0])
-    _df['s91'] = df['s9'].apply(lambda x: eval(x)[1])
-    
-    if filename == 'firefox':
-        _df['s92'] = df['s9'].apply(lambda x: eval(x)[2])
-    
-    x = _df.drop('y', axis=1)
-    y = _df['y']
-    
-    data = Data(*train_test_split(x, y))
-    data = split_data(filename, data, n_classes)
-    return data
+    return learner

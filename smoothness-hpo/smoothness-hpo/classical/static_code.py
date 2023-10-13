@@ -2,18 +2,26 @@ from typing import Tuple
 import os
 
 import numpy as np
+import pandas as pd
+from raise_utils.data import Data
 from raise_utils.transforms.wfo import fuzz_data
 from raise_utils.transforms import Transform
 from raise_utils.learners import Autoencoder
+from raise_utils.metrics import ClassificationMetrics
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 from smoothness.configs import learner_configs
 from smoothness.hpo.smoothness import SmoothnessHPO
-from smoothness.data import load_defect_prediction_data, remove_labels
+from smoothness.data import remove_labels
 from smoothness.hpo.util import get_learner
 
 import ses
+
+
+datasets = ['ant', 'cassandra', 'commons', 'derby',
+            'jmeter', 'lucene-solr', 'maven', 'tomcat']
 
 config_space = {
     'preprocessor': ['normalize', 'standardize', 'minmax', 'maxabs', 'robust'],
@@ -23,14 +31,40 @@ config_space = {
     'smooth': [False, True],
 }
 learner_name = 'nb'
-dataset = 'ant'
+base_path = './data/static_code/'
 
 
-def data_fn(config: dict) -> Tuple[np.array, np.array, np.array, np.array]:
-    data = load_defect_prediction_data(dataset)
+def load_data(dataset: str, config: dict) -> Tuple[np.array, np.array, np.array, np.array]:
+    train_file = base_path + 'train/' + dataset + '_B_features.csv'
+    test_file = base_path + 'test/' + dataset + '_C_features.csv'
+
+    train_df = pd.read_csv(train_file)
+    test_df = pd.read_csv(test_file)
+
+    df = pd.concat((train_df, test_df), join='inner')
+
+    X = df.drop('category', axis=1)
+    y = df['category']
+
+    y[y == 'close'] = 1
+    y[y == 'open'] = 0
+
+    y = np.array(y, dtype=np.float32)
+
+    X = X.select_dtypes(
+        exclude=['object']).astype(np.float32)
+
+    if dataset == 'maven':
+        data = Data(*train_test_split(X, y, test_size=.5, shuffle=False))
+    else:
+        data = Data(*train_test_split(X, y, test_size=.2, shuffle=False))
+
+    data.x_train = np.array(data.x_train)
+    data.y_train = np.array(data.y_train)
 
     transform = Transform(config['preprocessor'])
     transform.apply(data)
+
     x_train, x_test, y_train, y_test = data.x_train, data.x_test, data.y_train, data.y_test
 
     if config['smooth']:
@@ -68,8 +102,8 @@ def data_fn(config: dict) -> Tuple[np.array, np.array, np.array, np.array]:
     return x_train, x_test, y_train, y_test
 
 
-def query_fn(config: dict, seed: int = 42, budget: int = 100):
-    x_train, x_test, y_train, y_test = data_fn(config)
+def query_fn(dataset: str, config: dict, seed: int = 42, budget: int = 100):
+    x_train, x_test, y_train, y_test = load_data(dataset, config)
 
     # Comment the below if statements for MulticlassDL.
     if len(y_train.shape) > 1:
@@ -82,29 +116,26 @@ def query_fn(config: dict, seed: int = 42, budget: int = 100):
     learner.fit(x_train, y_train)
     preds = learner.predict(x_test)
 
-    return accuracy_score(y_test, preds)
+    metrics = ClassificationMetrics(y_test, preds)
+    metrics.add_metrics(['pd', 'pf', 'prec', 'auc'])
+
+    return metrics.get_metrics()
 
 
 n_jobs = 20
 if __name__ == '__main__':
     hpo_space = {**config_space, **learner_configs[learner_name]}
 
-    hpo = SmoothnessHPO(hpo_space, learner_name, query_fn)
+    for dataset in datasets:
+        q_fn = lambda config, seed, budget: query_fn(dataset, config, seed, budget)
+        d_fn = lambda config: load_data(dataset, config)
+        hpo = SmoothnessHPO(hpo_space, learner_name, q_fn, d_fn)
 
-    try:
-        scores, time = hpo.run(1, 10)
+        try:
+            scores, time = hpo.run(20, 10)
+            ses.send_email('gcloud Success Notification', f'Run completed.')
 
-        # Notify me
-        with open('.status', 'r') as f:
-            lines = int(f.readline())
-
-        if lines + 1 >= n_jobs:
-            ses.send_email('ARC Success Notification', 'All jobs completed.')
-        else:
-            with open('.status', 'w') as f:
-                f.write(str(lines + 1))
-
-        print(f'Accuracy: {np.median(scores)}\nTime: {time}')
-    except:
-        ses.send_email('ARC Failure Notification', f'Run {os.getenv("SLURM_JOB_ID")} failed.')
-        n_jobs -= 1
+            print(f'Accuracy: {np.median(scores)}\nTime: {time}')
+        except:
+            ses.send_email('ARC Failure Notification', f'Run failed.')
+            n_jobs -= 1
