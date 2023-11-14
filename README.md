@@ -17,3 +17,4 @@ This repo will act as the definitive source of code for my PhD thesis. It will b
 * [DL4SE](https://github.com/yrahul3910/dl4se): The DL4SE repo is a more general repo that tests GHOST-v2 on multiple tasks. It is known that GHOST-v2 is the SOTA for multiple tasks in this repo.
 * [GHOST paper](https://arxiv.org/pdf/2008.03835.pdf): The original GHOST paper.
 * [Progressive GHOST repo](https://github.com/yrahul3910/progressive-ghost): Seems to be the code for ablation studies.
+* [HPO based on strong convexity](https://github.com/yrahul3910/strong-convexity): An extension of the smoothness-based HPO work here.
