@@ -19,3 +19,4 @@ This repo will act as the definitive source of code for my PhD thesis. It will b
 * [Progressive GHOST repo](https://github.com/yrahul3910/progressive-ghost): Seems to be the code for ablation studies.
 * [HPO based on strong convexity](https://github.com/yrahul3910/strong-convexity): An extension of the smoothness-based HPO work here.
 * [Other, one-off experiments](https://github.com/yrahul3910/yedida-gone-nuts/blob/master/Landscape%20analysis.ipynb): This is more of a prototyping repo, but it has some important results (like the [win rate vs smoothness figure in the SMOOTHIE paper](https://github.com/yrahul3910/yedida-gone-nuts/blob/master/Landscape%20analysis.ipynb)).
+* [Neural nets with less data](https://github.com/yrahul3910/neunet-less-data): Some very early experiments on deep learning with lesser data.
